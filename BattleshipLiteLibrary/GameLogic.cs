@@ -53,7 +53,16 @@ namespace BattleshipLiteLibrary
         public static bool PlaceShip(PlayerInfoModel model, string location)
         {
             bool output = false;
-            (string row, int column) = SplitShotIntoRowAndColumn(location);
+            string row = String.Empty;
+            int column = 0;
+            try
+            {
+                (row, column) = SplitShotIntoRowAndColumn(location);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
             bool isValidLocation = ValidateGridLocation(model, row, column);
             bool isSpotOpen = ValidateShipLocation(model, row, column);
@@ -177,6 +186,7 @@ namespace BattleshipLiteLibrary
                 if (ship.SpotLetter == row.ToUpper() && ship.SpotNumber == column)
                 {
                     isAHit = true;
+                    ship.Status = GridSpotStatus.Sunk;
                 }
             }
 

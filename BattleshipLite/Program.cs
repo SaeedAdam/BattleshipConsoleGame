@@ -10,8 +10,8 @@ namespace BattleshipLite
         {
             WelcomeMessage();
 
-            PlayerInfoModel activePlayer = CreatePlayer("Player 1");
-            PlayerInfoModel opponent = CreatePlayer("Player 2");
+            var activePlayer = CreatePlayer("Player 1");
+            var opponent = CreatePlayer("Player 2");
             PlayerInfoModel winner = null;
 
             do
@@ -19,9 +19,10 @@ namespace BattleshipLite
                 DisplayShotGrid(activePlayer);
                 
                 RecordPlayerShot(activePlayer, opponent);
-
+                
+                Console.Clear();
                 // Determine if the game should continue
-                bool doesGameContinue = GameLogic.PlayerStillActive(opponent);
+                var doesGameContinue = GameLogic.PlayerStillActive(opponent);
 
                 // If over, set activePlayer as the winner 
                 // else, swap positions (activePlayer to opponent)
@@ -53,15 +54,24 @@ namespace BattleshipLite
             // Determine what row and column that is - split it apart
             // Determine if that is a valid shot
             // Go back to the beginning if not a valid shot
-            bool isValidShot = false;
-            string row = string.Empty;
-            int column;
+            bool isValidShot;
+            var row = string.Empty;
+            var column = 0;
 
             do
             {
-                string shot = AskForShot(activePlayer);
-                (row, column) = GameLogic.SplitShotIntoRowAndColumn(shot);
-                isValidShot = GameLogic.ValidateShot(activePlayer, row, column);
+                var shot = AskForShot(activePlayer);
+
+                try
+                {
+                    (row, column) = GameLogic.SplitShotIntoRowAndColumn(shot);
+                    isValidShot = GameLogic.ValidateShot(activePlayer, row, column);
+                }
+                catch (Exception ex)
+                {
+                    isValidShot = false;
+                    Console.WriteLine(ex.Message);
+                }
 
                 if (isValidShot == false)
                 {
@@ -71,7 +81,7 @@ namespace BattleshipLite
             } while (!isValidShot);
 
             // Determine shot results 
-            bool isAHit = GameLogic.IdentifyShotResult(opponent, row, column);
+            var isAHit = GameLogic.IdentifyShotResult(opponent, row, column);
 
             // Record results
             GameLogic.MarkShotResult(activePlayer, row, column, isAHit);
@@ -81,14 +91,14 @@ namespace BattleshipLite
         private static string AskForShot(PlayerInfoModel player)
         {
             Console.Write($"It's your turn {player.UsersName}. Please enter your shot selection: ");
-            string output = Console.ReadLine();
+            var output = Console.ReadLine();
 
             return output;
         }
 
         private static void DisplayShotGrid(PlayerInfoModel activePlayer)
         {
-            string currentRow = activePlayer.ShotGrid[0].SpotLetter;
+            var currentRow = activePlayer.ShotGrid[0].SpotLetter;
 
             foreach (var gridSpot in activePlayer.ShotGrid)
             {
@@ -104,18 +114,19 @@ namespace BattleshipLite
                 }
                 else if (gridSpot.Status == GridSpotStatus.Hit)
                 {
-                    Console.Write(" X ");
+                    Console.Write(" X  ");
                 }
                 else if (gridSpot.Status == GridSpotStatus.Miss)
                 {
-                    Console.Write(" O ");
+                    Console.Write(" O  ");
                 }
                 else
                 {
-                    Console.Write(" ? ");
+                    Console.Write(" ?  ");
                 }
             }
 
+            Console.WriteLine();
             Console.WriteLine();
         }
 
@@ -127,7 +138,7 @@ namespace BattleshipLite
 
         private static PlayerInfoModel CreatePlayer(string playerTitle)
         {
-            PlayerInfoModel output = new PlayerInfoModel();
+            var output = new PlayerInfoModel();
 
             Console.WriteLine($"Player information for {playerTitle}");
 
@@ -150,7 +161,7 @@ namespace BattleshipLite
         private static string AskForUsersName()
         {
             Console.Write("What is your name: ");
-            string output = Console.ReadLine();
+            var output = Console.ReadLine();
             
 
             return output;
@@ -161,9 +172,9 @@ namespace BattleshipLite
             do
             {
                 Console.Write($"Where do you want to place ship number {model.ShipLocations.Count + 1}: ");
-                string location = Console.ReadLine();
+                var location = Console.ReadLine();
 
-                bool isValidLocation = GameLogic.PlaceShip(model, location);
+                var isValidLocation = GameLogic.PlaceShip(model, location);
 
                 if (!isValidLocation)
                 {
