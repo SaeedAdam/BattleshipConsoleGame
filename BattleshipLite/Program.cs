@@ -4,7 +4,7 @@ using BattleshipLiteLibrary.Models;
 
 namespace BattleshipLite
 {
-    class Program
+    static class Program
     {
         public static void Main()
         {
@@ -25,7 +25,7 @@ namespace BattleshipLite
 
                 // If over, set activePlayer as the winner 
                 // else, swap positions (activePlayer to opponent)
-                if (doesGameContinue == true)
+                if (doesGameContinue)
                 {
                     // Swap positions (using Tuple)
                     (activePlayer, opponent) = (opponent, activePlayer);
@@ -59,11 +59,11 @@ namespace BattleshipLite
 
             do
             {
-                string shot = AskForShot();
+                string shot = AskForShot(activePlayer);
                 (row, column) = GameLogic.SplitShotIntoRowAndColumn(shot);
                 isValidShot = GameLogic.ValidateShot(activePlayer, row, column);
 
-                if (!isValidShot)
+                if (isValidShot == false)
                 {
                     Console.WriteLine("Invalid Shot Location. Please try again.");
                 }
@@ -74,13 +74,13 @@ namespace BattleshipLite
             bool isAHit = GameLogic.IdentifyShotResult(opponent, row, column);
 
             // Record results
-            GameLogic.MarkShot(activePlayer, row, column, isAHit);
+            GameLogic.MarkShotResult(activePlayer, row, column, isAHit);
 
         }
 
-        private static string AskForShot()
+        private static string AskForShot(PlayerInfoModel player)
         {
-            Console.Write("Please enter your shot selection: ");
+            Console.Write($"It's your turn {player.UsersName}. Please enter your shot selection: ");
             string output = Console.ReadLine();
 
             return output;
@@ -115,6 +115,8 @@ namespace BattleshipLite
                     Console.Write(" ? ");
                 }
             }
+
+            Console.WriteLine();
         }
 
         private static void WelcomeMessage()
