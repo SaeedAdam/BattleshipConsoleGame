@@ -20,7 +20,7 @@ namespace BattleshipLite
                 
                 RecordPlayerShot(activePlayer, opponent);
                 
-                Console.Clear();
+                
                 // Determine if the game should continue
                 var doesGameContinue = GameLogic.PlayerStillActive(opponent);
 
@@ -42,10 +42,17 @@ namespace BattleshipLite
 
         }
 
+        private static void ShowStatistics(PlayerInfoModel winner)
+        {
+            Console.WriteLine($"{GameLogic.GetHitCount(winner)} (hits) and {GameLogic.GetMissCount(winner)} (misses).");
+        }
+
         private static void IdentifyWinner(PlayerInfoModel winner)
         {
             Console.WriteLine($"Congratulations to {winner.UsersName} for winning!");
             Console.WriteLine($"{winner.UsersName} took {GameLogic.GetShotCount(winner)} shots.");
+            ShowStatistics(winner);
+
         }
 
         private static void RecordPlayerShot(PlayerInfoModel activePlayer, PlayerInfoModel opponent)
@@ -86,11 +93,24 @@ namespace BattleshipLite
             // Record results
             GameLogic.MarkShotResult(activePlayer, row, column, isAHit);
 
+            DisplayShotResult(row, column, isAHit);
+        }
+
+        private static void DisplayShotResult(string row, int column, bool isAHit)
+        {
+            if (isAHit)
+            {
+                Console.WriteLine($"{row}{column} is a Hit!");
+            }
+            else
+            {
+                Console.WriteLine($"{row}{column} is a Miss!");
+            }
         }
 
         private static string AskForShot(PlayerInfoModel player)
         {
-            Console.Write($"It's your turn {player.UsersName}. Please enter your shot selection: ");
+            Console.Write($"{player.UsersName}, please enter your shot selection: ");
             var output = Console.ReadLine();
 
             return output;

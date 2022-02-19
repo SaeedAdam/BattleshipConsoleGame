@@ -210,5 +210,35 @@ namespace BattleshipLiteLibrary
                 }
             }
         }
+
+        public static string GetMissCount(PlayerInfoModel player)
+        {
+            int hitCount = 0;
+
+            foreach (var shot in player.ShotGrid)
+            {
+                if (shot.Status == GridSpotStatus.Miss)
+                {
+                    hitCount++;
+                }
+            }
+
+            return hitCount.ToString();
+        }
+
+        public static string GetHitCount(PlayerInfoModel player)
+        {
+            int missCount = 0;
+
+            foreach (var shot in player.ShotGrid)
+            {
+                if (shot.Status == GridSpotStatus.Hit)
+                {
+                    missCount++;
+                }
+            }
+
+            return missCount.ToString();
+        }
     }
 }
